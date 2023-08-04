@@ -10,3 +10,15 @@
     import 'relative/path/to/stylesheet.scss';
 
 */
+.card {
+    margin: 15px;
+    box-shadow: 4px -2px;
+    background-color: rgb(160, 197, 252);
+    border: none;
+    height: 350px;
+    width: 500px;
+    margin-right: 250px;
+    margin-left: 400px;
+};
+
+
