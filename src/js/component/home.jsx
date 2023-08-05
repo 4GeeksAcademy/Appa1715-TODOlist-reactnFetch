@@ -8,93 +8,99 @@ const  APPI_URL = "https://playground.4geeks.com/apis/fake/todos/user/appa1715"
 
 //create your first component
 const Home = () => {
-	const [task, settaks] = useState ({
-		label: "",
-		"done": false
-	});
 
-	const [listtaks, setlisttaks] = useState ([]);
-	
-	const handleOnChange = (e) => {
-		settaks({
-			...task,
-			label: e.target.value
-		})
-	};
-	const handleDelete = (id) => {
-		const dellisttask = listtaks.filter((task, index)=> index !== id);
-		
-		setlisttaks([...dellisttask])
-		settaks(listtaks.length-1)
-		
-		task.length-1 === 0 ? setlisttaks("You are free now, add a "):null
-	}
+    //guardar la tarea que escribo
+    const [task, setTask] = useState({
+        label: "",
+        done: false
+    })
 
-	const saveTask = async (e) =>{
-		if (e.key == "Enter") { 
-			try {
-				let response = await fetch (APPI_URL, {
-					method: "PUT", headers:{
-						"Content-Type": "application/json"}, BODY: JSON.stringify([...listtaks, task])
-				})
-				if (response.ok) {
-					getTask(), settaks({
-						label: "",
-						"done": false
-					})
-				}
-			} catch (error) {
-				console.log("ERROR!");
-			}
-		}
-	}
+    //guardar todas las tareas
+    const [listTask, setListTask] = useState([])
 
-	const getTask = async () =>{
-		try {
-			let response = await fetch (APPI_URL)
-			if (response.ok) {
-				let data = await response.json ()
-				setlisttaks(data)
-			}
-		
-		} catch (error) {
-			console.log("ERROR!");
-		}
-	}
 
-	useEffect (()=> {
-		getTask()
-	}, []);
-	
+    const handleChange = (e) => {
+        setTask({
+            ...task,
+            label: e.target.value
+        })
+    }
 
-	return (
-		<div className="card text-center">
+    const saveTask = async (event) => {
+        if (event.key == "Enter") {
+            try {
+                let response = await fetch(APPI_URL, {
+                    method: PUT,
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify([...listTask, task])
+                })
+
+                if (response.ok) {
+                    getTasks()
+                    setTask({
+                        label: "",
+                        done: false
+                    })
+                }
+
+            } catch (error) {
+                console.log("ERROR!")
+            }
+        }
+    }
+
+    const getTasks = async () => {
+        try {
+            let response = await fetch(APPI_URL)
+            if (response.ok) {
+                let data = await response.json()
+
+                setListTask(data)
+            }
+
+        } catch (error) {
+            console.log("ERROR!")
+        }
+    }
+
+
+    useEffect(() => {
+        getTasks()
+    }, [])
+
+
+    return (
+        <div className="card text-center">
   			<div className="header ">
 			  <h1 className="bg-black p-2 text-white bg-opacity-25 rounded">My TO-DO List!</h1>
- 			</div>
-  			<div className="card-body">
-				<input className="label w-50 p-1 border border-3"
-				type="text" 
-				placeholder="Writte a new pending task!"
-				value={task.label}
-				onChange={handleOnChange}
-				onKeyDown={saveTask}
-				/>
-				
-  			</div>
-			<div>
-				<button className="btn btn-outline-secondary"
-				onClick={() =>{}}>Create!</button>
-			  	<button 
-				className="btn btn-outline-secondary"
-				onClick={()=>handleDelete(index)}>Delete!
-				</button>
 			</div>
-  			<div className="card-footer text-muted">
-			  <label className="footer">{setlisttaks + "task"} </label>
-  			</div>
-		</div>
-	);
+  			<div className="card-body">
+                    <input
+                        type="text"
+                        placeholder="Add a new task!"
+                        className="form-control"
+                        name="label"
+                        value={task.label}
+                        onChange={handleChange}
+                        onKeyDown={saveTask}
+                    />
+
+                    <ul>
+                        {
+                            listTask.map((item, index) => {
+                                return (
+                                    <li key={index}>{item.label}</li>
+                                )
+                            })
+                        }
+                    </ul>
+                </div>
+            </div>
+        
+    );
 };
+
 
 export default Home;
