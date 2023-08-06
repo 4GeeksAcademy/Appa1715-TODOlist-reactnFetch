@@ -15,9 +15,7 @@ const Home = () => {
         done: false
     })
 
-    //guardar todas las tareas
     const [listTask, setListTask] = useState([])
-
 
     const handleChange = (e) => {
         setTask({
