@@ -16,6 +16,7 @@ const Home = () => {
     })
 
     const [listTask, setListTask] = useState([])
+    const [erase,setErase] = useState (-1)
 
     const handleChange = (e) => {
         setTask({
@@ -28,7 +29,7 @@ const Home = () => {
         if (event.key == "Enter") {
             try {
                 let response = await fetch(APPI_URL, {
-                    method: PUT,
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/json"
                     },
@@ -48,6 +49,20 @@ const Home = () => {
             }
         }
     }
+    const createUser = async ()=>{
+        try {
+            let response = await fetch(APPI_URL,
+                {method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify([])})
+                if (response.ok){
+                    getTasks ()
+                }
+        } catch (error) {
+            
+        }
+    }
+    
 
     const getTasks = async () => {
         try {
@@ -56,6 +71,13 @@ const Home = () => {
                 let data = await response.json()
 
                 setListTask(data)
+            }
+            if (response.ok){
+                let data = await response.json ()
+                setListTask (data)
+            }
+            if (response.status==404) {
+                createUser()
             }
 
         } catch (error) {
@@ -85,14 +107,17 @@ const Home = () => {
                         onKeyDown={saveTask}
                     />
 
-                    <ul>
+                    <ul className="bg-black p-2 text-white bg-opacity-25 rounded container" >
                         {
                             listTask.map((item, index) => {
                                 return (
-                                    <li key={index}>{item.label}</li>
+                                    <li key={index}>{item.label}
+                                    <button className="btnClose" onClick={()=>handleDelete(index)}></button>
+                                    </li>
                                 )
                             })
                         }
+
                     </ul>
                 </div>
             </div>
