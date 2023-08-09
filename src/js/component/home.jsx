@@ -24,6 +24,14 @@ const Home = () => {
             label: e.target.value
         })
     }
+    async function removeItem() {
+        try {
+            let response = await fetch(APPI_URL, {
+                method: "DELETE",
+            });
+        } catch (err) {
+        }
+    }
 
     const saveTask = async (event) => {
         if (event.key == "Enter") {
@@ -112,7 +120,7 @@ const Home = () => {
                             listTask.map((item, index) => {
                                 return (
                                     <li key={index}>{item.label}
-                                    <button className="btnClose" onClick={()=>handleDelete(index)}></button>
+                                    <button className="btnClose" onClick={()=>removeItem(index)}></button>
                                     </li>
                                 )
                             })
