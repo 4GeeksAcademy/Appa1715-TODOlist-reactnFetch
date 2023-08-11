@@ -11,27 +11,43 @@ const Home = () => {
 
     //guardar la tarea que escribo
     const [task, setTask] = useState({
-        label: "",
-        done: false
+        "label": "",
+        "done": false
     })
 
     const [listTask, setListTask] = useState([])
-    const [erase,setErase] = useState (-1)
 
     const handleChange = (e) => {
         setTask({
             ...task,
-            label: e.target.value
+            "label": e.target.value
         })
     }
-    async function removeItem() {
+    const handleDelete = (label) => {
+        console.log("borré", label);
+        const newTaskList = listTask.filter((item) => item.label !== label );
+        updateListTask (newTaskList)
+    }
+    const updateListTask = async (newList) =>{
         try {
             let response = await fetch(APPI_URL, {
-                method: "DELETE",
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(newList)
             });
-        } catch (err) {
+            if (response.ok) {
+                setListTask(newList)
+                console.log("Provando si borra");
+            }
+            if (response.status==400) {
+                handleDelete()
+            }
+        } catch (error) {
+            console.log("ERROR!");
         }
-    }
+    };
 
     const saveTask = async (event) => {
         if (event.key == "Enter") {
@@ -120,7 +136,7 @@ const Home = () => {
                             listTask.map((item, index) => {
                                 return (
                                     <li key={index}>{item.label}
-                                    <button className="btnClose" onClick={()=>removeItem(index)}></button>
+                                    <button className="btnClose" onClick={()=>handleDelete(item.label)}></button>
                                     </li>
                                 )
                             })
