@@ -24,10 +24,22 @@ const Home = () => {
         })
     }
     const handleDelete = (label) => {
-        console.log("borré", label);
-        const newTaskList = listTask.filter((item) => item.label !== label );
-        updateListTask (newTaskList)
-    }
+        const newTaskList = listTask.filter((item) => item.label !== label);
+        if (newTaskList.length === 0) {
+            const newList = [{ label: TasksCounter, done: false }];
+            updateListTask(newList);
+        } else {
+            updateListTask(newTaskList);
+        }
+    };
+    
+
+    const TasksCounter=()=> {
+        if (listTask.length === 1) return "You are free now! Unless...";
+        else if (listTask.length === 2) return "You have 1 task left";
+        else return "You have " + listTask.length +  " pending tasks";
+      }
+    
     const updateListTask = async (newList) =>{
         try {
             let response = await fetch(APPI_URL, {
@@ -135,14 +147,19 @@ const Home = () => {
                         {
                             listTask.map((item, index) => {
                                 return (
-                                    <li key={index}>{item.label}
-                                    <button className="btnClose" onClick={()=>handleDelete(item.label)}></button>
-                                    </li>
+                                    <li key={index}>
+                                    <label>{item.label}</label>
+                                    {item.label !== TasksCounter && (
+                                        <button className="btnClose" onClick={() => handleDelete(item.label)}></button>
+                                    )}
+                                </li>
                                 )
                             })
                         }
 
                     </ul>
+                    <div>{TasksCounter()}</div>
+                        
                 </div>
             </div>
         
